@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import './CalendarTooltip.css';
 import { getToken } from "../helpers/auth";
+import './MesSessions.css'; 
 
 export default function MesSessions() {
   const [sessions, setSessions] = useState([]);
@@ -88,13 +90,14 @@ export default function MesSessions() {
     return "🔴 Terminée";
   };
 
+  // ✅ Utilisation de toLocaleDateString pour éviter le décalage
   const tileClassName = ({ date }) => {
-    const dateStr = date.toISOString().split("T")[0];
+    const dateStr = date.toLocaleDateString("fr-CA"); // ← MODIFIÉ
     return sessions.some((s) => s.date === dateStr) ? "has-session" : null;
   };
 
   const handleDateClick = (date) => {
-    const dateStr = date.toISOString().split("T")[0];
+    const dateStr = date.toLocaleDateString("fr-CA"); // ← MODIFIÉ
     const filtered = sessions.filter((s) => s.date === dateStr);
     setPopupSessions(filtered);
     setSelectedDate(dateStr);
@@ -179,7 +182,7 @@ export default function MesSessions() {
   return (
     <div style={{ padding: "20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2>📅 Planifier votre blocus </h2>
+        <h2>📅 Mes sessions </h2>
         <button onClick={() => setShowForm(!showForm)}>
           {showForm ? "❌ Annuler" : "➕ Ajouter une session"}
         </button>
