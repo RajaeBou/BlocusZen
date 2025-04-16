@@ -4,6 +4,7 @@ import LoginRegister from "./LoginRegister";
 import MesSessions from "./pages/MesSessions";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import SessionLive from "./pages/SessionLive";
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/mes-sessions" element={<MesSessions />} />
         <Route path="/login" element={<LoginRegister />} />
+        <Route path="/session/:id/live" element={<SessionLive />} />
+
       </Routes>
     </BrowserRouter>
   );

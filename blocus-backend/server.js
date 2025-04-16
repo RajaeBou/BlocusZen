@@ -10,6 +10,15 @@ const referenceRoutes = require("./routes/references");
 //app.use('/api/study-sessions', studySessionRoutes);
 const app = express();
 
+app.use(cors({
+  origin: "http://localhost:3000", // ton frontend
+  credentials: true,
+}));
+
+app.use(express.json());
+
+connectDB();
+
 const inviteRoutes = require('./routes/invites');
 app.use('/api/invites', inviteRoutes);
 
@@ -22,20 +31,33 @@ app.use('/api/user-profile', userProfileRoutes);
 const syntheseRoutes = require('./routes/synthese');
 app.use('/api/synthese', syntheseRoutes);
 
-const liveSessionRoutes = require('./routes/liveSession');
-app.use('/api/live-session', liveSessionRoutes);
+//const liveSessionRoutes = require('./routes/liveSession');
+//app.use('/api/live-session', liveSessionRoutes);
 
 const aiHelperRoutes = require('./routes/aiHelper');
 app.use('/api/ai', aiHelperRoutes);
 
+const testSecureRoutes = require('./routes/testSecure');
+app.use('/api/secure', testSecureRoutes);
+
+
 app.use('/api/secure', require('./routes/testSecure'));
 
+const liveSessionRoutes = require('./routes/liveSession');
+app.use("/api/liveSessions", require("./routes/liveSession"));
 
-app.use(cors());
-app.use(express.json());
 
-// 🔌 Connexion à MongoDB
-connectDB();
+
+
+
+
+
+//app.use(cors(corsOptions));
+
+
+//app.use(cors());
+
+
 
 //app.use("/api", referenceRoutes);
 //app.use("/api", userProfileRoutes);

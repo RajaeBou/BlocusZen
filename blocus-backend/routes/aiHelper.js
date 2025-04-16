@@ -1,25 +1,33 @@
-
 // routes/aiHelper.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const axios = require("axios");
 
-// 🧠 Simulateur IA : générer un résumé simple à partir d'un sujet
-router.post('/generate-summary', async (req, res) => {
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+router.post("/generate-summary", async (req, res) => {
   try {
     const { subject } = req.body;
 
-    // Simulation simple (tu peux remplacer ça plus tard avec OpenAI API)
-    const summaries = {
-      'analyse': "L'analyse mathématique concerne l'étude des fonctions, des limites, des dérivées et des intégrales.",
-      'reseaux': "Les réseaux informatiques permettent l'échange de données entre dispositifs interconnectés.",
-      'poo': "La POO est un paradigme fondé sur les objets, l'encapsulation, l'héritage et le polymorphisme."
-    };
+    const response = await axios.post(GEMINI_API_URL, {
+      contents: [
+        {
+          parts: [
+            { text: `Explique-moi simplement : ${subject}` }
+          ]
+        }
+      ]
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
 
-    const summary = summaries[subject.toLowerCase()] || `Résumé intelligent pour le sujet "${subject}" : (à compléter...).`;
-
+    const summary = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "Aucune réponse générée.";
     res.json({ summary });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Erreur Gemini :", err.response?.data || err.message);
+    res.status(500).json({ error: "Erreur lors de la génération avec Gemini." });
   }
 });
 
