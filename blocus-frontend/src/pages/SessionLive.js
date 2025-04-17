@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getToken } from "../helpers/auth";
 import VideoChat from "../components/VideoChat";
+import ChatComponent from "../components/ChatComponent";
 
 export default function SessionLive() {
   const { id } = useParams();
@@ -115,9 +116,14 @@ export default function SessionLive() {
       <p>🔐 {session.visibility}</p>
       <p>⏱️ Temps restant : <strong>{timeLeft}</strong></p>
 
+      
       {session.visibility === "public" && (
-      <VideoChat session={session} userName="Ton prénom" />
-      )}
+  <>
+    <VideoChat session={session} userName="Ton prénom" />
+    <ChatComponent sessionId={session._id} />
+  </>
+)}
+      
   
   <label style={{ fontWeight: "bold" }}>📝 Tes notes pendant la session :</label>
 

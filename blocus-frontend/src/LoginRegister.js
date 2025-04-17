@@ -40,7 +40,7 @@ export default function LoginRegister() {
       localStorage.setItem("token", token); // ✅ Enregistrement du token
 
       // 🔁 Redirection après connexion
-      window.location.href = "/sessions";
+      window.location.href = "/mes-sessions";
 
     } catch (error) {
       alert("❌ Erreur connexion : " + error.message);
@@ -59,7 +59,7 @@ export default function LoginRegister() {
       localStorage.setItem("token", token); // ✅ Enregistrement du token
 
       // 🔁 Redirection après connexion Google
-      window.location.href = "/sessions";
+      window.location.href = "/mes-sessions";
 
     } catch (error) {
       alert("❌ Erreur Google : " + error.message);

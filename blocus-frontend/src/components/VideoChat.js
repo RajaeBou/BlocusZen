@@ -1,4 +1,3 @@
-// src/components/VideoChat.js
 import React, { useEffect, useRef, useState } from "react";
 
 export default function VideoChat({ session, userName }) {

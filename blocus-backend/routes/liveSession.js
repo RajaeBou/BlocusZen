@@ -1,9 +1,6 @@
-// routes/liveSession.js
 const express = require('express');
 const router = express.Router();
 const StudySession = require('../models/StudySession');
-
-// 🔄 Entrer dans une session en live (minuteur + notes)
 
 
 
@@ -14,7 +11,7 @@ router.get("/:id", async (req, res) => {
 });
 
 
-// 📝 Mettre à jour les notes prises pendant la session
+
 router.put('/:id/note', async (req, res) => {
   try {
     const session = await StudySession.findByIdAndUpdate(
@@ -28,7 +25,7 @@ router.put('/:id/note', async (req, res) => {
   }
 });
 
-// ✅ Marquer une session comme terminée
+
 router.post('/:id/finish', async (req, res) => {
   try {
     const session = await StudySession.findByIdAndUpdate(
