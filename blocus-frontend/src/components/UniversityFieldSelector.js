@@ -8,17 +8,19 @@ export default function UniversityFieldSelector() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const uniRes = await fetch("http://localhost:5000/api/universities");
-        const fieldRes = await fetch("http://localhost:5000/api/fields");
+        const uniRes = await fetch("http://localhost:5000/api/references/universities");
+        const fieldRes = await fetch("http://localhost:5000/api/references/fields");
+
+        if (!uniRes.ok || !fieldRes.ok) throw new Error("Erreur API");
 
         const universities = await uniRes.json();
         const fields = await fieldRes.json();
 
         setUniversities(universities);
         setFields(fields);
-        setLoading(false);
       } catch (err) {
         console.error("❌ Erreur API :", err);
+      } finally {
         setLoading(false);
       }
     };
@@ -36,7 +38,7 @@ export default function UniversityFieldSelector() {
       <select>
         <option value="">-- Sélectionner une université --</option>
         {universities.map((u) => (
-          <option key={u._id} value={u.name}>{u.name}</option>
+          <option key={u._id} value={u._id}>{u.name}</option>
         ))}
       </select>
 
@@ -46,7 +48,7 @@ export default function UniversityFieldSelector() {
       <select>
         <option value="">-- Sélectionner une filière --</option>
         {fields.map((f) => (
-          <option key={f._id} value={f.name}>
+          <option key={f._id} value={f._id}>
             {f.name} ({f.sector})
           </option>
         ))}

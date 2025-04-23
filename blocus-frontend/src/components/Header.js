@@ -20,6 +20,8 @@ const Header = () => {
         <Link to="/notifications">🔔</Link>
         <Link to="/messages">✉️</Link>
         <Link to="/login">👤</Link>
+        <Link to="/profile">Profil</Link>
+
       </nav>
     </header>
   );
