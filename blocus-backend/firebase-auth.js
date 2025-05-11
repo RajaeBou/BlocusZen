@@ -1,25 +1,27 @@
 const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
 module.exports = async function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
-
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token manquant ou mal formé" });
+    return res.status(401).json({ error: "Token manquant ou invalide." });
   }
 
-  const token = authHeader.split(" ")[1]; // ✅ Récupère le vrai token
-
+  const token = authHeader.split(" ")[1];
   try {
     const decoded = await admin.auth().verifyIdToken(token);
+    //console.log("✅ Token Firebase décodé :", decoded); // 👈 AJOUTE CECI
     req.user = decoded;
     next();
-  } catch (error) {
-    console.error("❌ Erreur token :", error);
-    res.status(401).json({ message: "Token invalide" });
+  } catch (err) {
+    console.error("❌ Erreur Firebase Admin :", err); // 👈 Et ça aussi
+    return res.status(403).json({ error: "Token invalide ou expiré." });
   }
+  
 };

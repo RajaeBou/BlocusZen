@@ -2,10 +2,9 @@ const mongoose = require("mongoose");
 
 const StudySessionSchema = new mongoose.Schema({
   userId: {
-    type: String, // ✅ Corrigé
+    type: String,
     required: true
   },
-  
   subject: {
     type: String,
     required: true,
@@ -23,7 +22,7 @@ const StudySessionSchema = new mongoose.Schema({
     required: true,
   },
   note: {
-    type: String, // Prise de note pendant la session
+    type: String,
   },
   completed: {
     type: Boolean,
@@ -37,7 +36,11 @@ const StudySessionSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["pending", "active", "finished"],
-    default: "pending", // active = en cours, finished = terminée
+    default: "pending",
+  },
+  acceptedUsers: {
+    type: [String],
+    default: [],
   },
 }, { timestamps: true });
 

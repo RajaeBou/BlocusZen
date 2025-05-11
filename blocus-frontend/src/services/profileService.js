@@ -1,4 +1,3 @@
-// src/services/profileService.js
 
 const API_URL = "/api/profile";
 

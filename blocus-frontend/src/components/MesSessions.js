@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import './CalendarTooltip.css';
-import { getToken } from "../helpers/auth";
+import { getToken, getCurrentUserId } from "../helpers/auth";
 import './MesSessions.css'; 
 
 export default function MesSessions() {
@@ -22,23 +22,26 @@ export default function MesSessions() {
     visibility: "private",
   });
 
-  // 🔄 Charger les sessions
+  // 🔄 Charger les session
+  const [currentUserId, setCurrentUserId] = useState(null);
+
   useEffect(() => {
     const fetchSessions = async () => {
       try {
         const token = await getToken();
-        if (!token) return;
-
+        const uid = await getCurrentUserId();
+        if (!token || !uid) return;
+  
         const res = await fetch("http://localhost:5000/api/sessions/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error("Réponse invalide");
-
+  
         const now = new Date();
         const validSessions = [];
-
+  
         for (const s of data) {
           const end = new Date(`${s.date}T${s.endTime}`);
           if (end < now) {
@@ -50,15 +53,27 @@ export default function MesSessions() {
             validSessions.push(s);
           }
         }
-
-        setSessions(validSessions);
+  
+        // ✅ Ajouter rôle selon userId ou acceptedUsers
+        const sessionsWithRoles = validSessions.map((session) => {
+          const role = session.userId === uid
+            ? "Organisateur"
+            : session.acceptedUsers?.includes(uid)
+              ? "Participant"
+              : "Inconnu";
+          return { ...session, role };
+        });
+  
+        setSessions(sessionsWithRoles);
       } catch (err) {
         console.error("Erreur chargement sessions :", err);
       }
     };
-
+  
     fetchSessions();
   }, []);
+  
+
 
   // 🔔 Rappel 2 min avant
   useEffect(() => {
@@ -187,9 +202,9 @@ export default function MesSessions() {
           {showForm ? "❌ Annuler" : "➕ Ajouter une session"}
         </button>
       </div>
-
+  
       <Calendar onClickDay={handleDateClick} tileClassName={tileClassName} />
-
+  
       {popupSessions.length > 0 && (
         <div style={{ marginTop: "20px", background: "#f9f9f9", padding: "10px", borderRadius: "8px" }}>
           <h3>Sessions le {selectedDate}</h3>
@@ -212,7 +227,7 @@ export default function MesSessions() {
           </ul>
         </div>
       )}
-
+  
       {showForm && (
         <form onSubmit={handleAddSession} style={{ marginTop: "20px" }}>
           <input type="text" placeholder="Matière" value={newSession.subject}
@@ -240,7 +255,7 @@ export default function MesSessions() {
           <button type="submit">✅ Ajouter</button>
         </form>
       )}
-
+  
       <div style={{ marginTop: "40px" }}>
         <h3>📋 Sessions à venir ou en cours</h3>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -251,6 +266,7 @@ export default function MesSessions() {
               <th>Heures</th>
               <th>Note</th>
               <th>🔐</th>
+              <th>👤 Rôle</th>
               <th>Statut</th>
               <th>Actions</th>
             </tr>
@@ -262,7 +278,11 @@ export default function MesSessions() {
                 <td>{s.date}</td>
                 <td>{s.startTime} → {s.endTime}</td>
                 <td>{s.note || "—"}</td>
-                <td>{s.visibility === "public" ? "🌐" : "Privée"}</td>
+                <td>{s.visibility === "public" ? "🌐" : "🔒"}</td>
+                <td>
+                  {s.role === "Organisateur" && "👑 Organisateur"}
+                  {s.role === "Participant" && "🙋 Participant"}
+                </td>
                 <td>{getStatus(s)}</td>
                 <td>
                   {getStatus(s) === "🟡 En cours" && (
@@ -275,7 +295,7 @@ export default function MesSessions() {
           </tbody>
         </table>
       </div>
-
+  
       {upcomingPopup && !dismissedPopup && (
         <div style={{
           position: "fixed",
@@ -298,4 +318,4 @@ export default function MesSessions() {
       )}
     </div>
   );
-}
+}  

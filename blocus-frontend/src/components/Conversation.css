@@ -1,0 +1,44 @@
+.conversation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.message-block {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+}
+
+.sent {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.received {
+  align-self: flex-start;
+  text-align: left;
+}
+
+.sender-name {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 3px;
+}
+
+.message-bubble {
+  background-color: #e0e0e0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.sent .message-bubble {
+  background-color: #d1c4e9;
+}

@@ -4,7 +4,9 @@ import { getToken } from "../helpers/auth";
 export default function AjouterSynthese() {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
+  const [university, setUniversity] = useState("");
   const [level, setLevel] = useState("");
+  const [tags, setTags] = useState("");
   const [file, setFile] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -13,6 +15,8 @@ export default function AjouterSynthese() {
     formData.append("title", title);
     formData.append("subject", subject);
     formData.append("level", level);
+    formData.append("university", university);
+    formData.append("tags",tags);
     formData.append("file", file);
 
     try {
@@ -53,6 +57,24 @@ export default function AjouterSynthese() {
           required
           style={{ width: "100%", marginBottom: "10px" }}
         />
+
+  <input
+    type="text"
+    placeholder="Université"
+    value={university}
+    onChange={(e) => setUniversity(e.target.value)}
+    required
+    style={{ width: "100%", marginBottom: "10px" }}
+  />
+
+<input
+  type="text"
+  placeholder="#Tags"
+  value={tags}
+  onChange={(e) => setTags(e.target.value)}
+  required
+  style={{ width: "100%", marginBottom: "10px" }}
+/>
 
         <input
           type="text"

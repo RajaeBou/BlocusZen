@@ -1,52 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUserId } from '../helpers/auth'; // adapte si besoin
+import { getCurrentUserId, getToken } from '../helpers/auth';
 
 export default function TrouverBinome() {
   const [publicSessions, setPublicSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchPublicSessions() {
       try {
-        const userId = await getCurrentUserId();
-        console.log("👤 ID utilisateur connecté :", userId);
+        const token = await getToken();
+        if (!token) return;
 
-        if (!userId) return;
+        const response = await fetch('http://localhost:5000/api/sessions/public', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        const response = await fetch('http://localhost:5000/api/sessions/public');
+        if (!response.ok) throw new Error("Erreur lors de la récupération des sessions");
+
         const sessions = await response.json();
-        console.log("📚 Sessions récupérées :", sessions);
-
-        // Ne garder que les sessions d'autres utilisateurs
-        const filtered = sessions.filter(
-          (s) => s.userId && String(s.userId._id || s.userId) !== String(userId)
-        );
-
-        console.log("🧼 Sessions filtrées :", filtered);
-        setPublicSessions(filtered);
+        setPublicSessions(sessions);
       } catch (err) {
         console.error('❌ Erreur chargement sessions publiques :', err);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchPublicSessions();
   }, []);
 
-  const sendInvite = async (userId) => {
+  
+  const sendInvite = async (toUserId, sessionId) => {
     try {
-      const response = await fetch('/api/invites', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: userId }),
+      const from = await getCurrentUserId();
+      const token = await getToken();
+      if (!from || !toUserId || !token) return;
+  
+      const res = await fetch("http://localhost:5000/api/invitations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          from,
+          to: toUserId,
+          sessionId: sessionId || null,
+        }),
       });
-      if (response.ok) {
-        alert('✅ Invitation envoyée !');
-      } else {
-        alert("❌ Échec de l'invitation.");
-      }
+  
+      if (!res.ok) throw new Error("Échec de l'invitation");
+      alert("✅ Invitation envoyée !");
     } catch (err) {
-      console.error(err);
+      console.error("❌", err);
+      alert("Erreur lors de l'envoi de l'invitation.");
+    }
+  };
+  
+    
+    
+    
+    
+  
+
+  const formatDate = (dateStr) => {
+    try {
+      return new Date(dateStr).toLocaleDateString();
+    } catch {
+      return dateStr;
     }
   };
 
@@ -56,7 +79,9 @@ export default function TrouverBinome() {
         🤝 Trouver un binôme – <span style={{ color: '#444' }}>Sessions publiques</span>
       </h2>
 
-      {publicSessions.length === 0 ? (
+      {loading ? (
+        <p style={{ color: '#888' }}>Chargement des sessions...</p>
+      ) : publicSessions.length === 0 ? (
         <p style={{ color: '#666' }}>Aucune session publique disponible pour le moment.</p>
       ) : (
         <table style={{
@@ -82,32 +107,51 @@ export default function TrouverBinome() {
             {publicSessions.map(session => (
               <tr key={session._id} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={tdStyle}>{session.subject}</td>
-                <td style={tdStyle}>{session.date}</td>
+                <td style={tdStyle}>{formatDate(session.date)}</td>
                 <td style={tdStyle}>{session.startTime} → {session.endTime}</td>
-                <td style={tdStyle}>{session.userId?.level || '—'}</td>
+                <td style={tdStyle}>{session.organizerProfile?.level || '—'}</td>
                 <td style={tdStyle}>
                   <span style={{ fontWeight: 'bold', color: '#6a5acd' }}>
-                    {session.acceptedUsers?.length || 0} participant(s)
+                    {session.participantsProfiles?.length || 0} participant(s)
                   </span>
                 </td>
-
+                <td style={tdStyle}>
+                  <button
+                    onClick={() => navigate(`/profile/${session.organizerProfile?.userId}`)}
+                    style={{ ...btnStyle, backgroundColor: "#6c63ff" }}
+                  >
+                    👤 Voir le profil
+                  </button>
+                </td>
                 <td style={tdStyle}>
   <button
-    onClick={() => navigate(`/profile/${session.userId?._id}`)}
-    style={{ ...btnStyle, backgroundColor: "#6c63ff" }}
+    onClick={() => navigate(`/messages/${session.organizerProfile?.userId}`)}
+    style={{ ...btnStyle, backgroundColor: "#3498db" }}
   >
-    👤 Voir le profil
+    💬 Message
   </button>
 </td>
 
                 <td style={tdStyle}>
-                  <button
-                    onClick={() => sendInvite(session.userId?._id)}
-                    style={{ ...btnStyle, backgroundColor: '#8e44ad' }}
-                  >
-                    ✉️ Inviter
-                  </button>
-                </td>
+  <button
+    onClick={() => sendInvite(session.organizerProfile?.userId, session._id)}
+    style={{ ...btnStyle, backgroundColor: '#8e44ad' }}
+  >
+    ✉️ Inviter
+  </button>
+</td>
+
+                <td style={tdStyle}>
+  {session.isParticipant && (
+    <button
+      onClick={() => navigate(`/session/${session._id}/live`)}
+      style={{ ...btnStyle, backgroundColor: '#28a745' }}
+    >
+      👉 Rejoindre
+    </button>
+  )}
+</td>
+
               </tr>
             ))}
           </tbody>

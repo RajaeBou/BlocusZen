@@ -1,11 +1,15 @@
-// models/Invite.js
-const mongoose = require('mongoose');
+
+const mongoose = require("mongoose");
 
 const inviteSchema = new mongoose.Schema({
-  fromUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  toUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session' },
-  status: { type: String, enum: ['pending', 'accepted', 'declined'], default: 'pending' }
+  from: { type: String, required: true }, // UID Firebase
+  to: { type: String, required: true },
+  sessionId: { type: mongoose.Schema.Types.ObjectId, ref: "StudySession", required: true },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending"
+  }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Invite', inviteSchema);
+module.exports = mongoose.model("Invite", inviteSchema);

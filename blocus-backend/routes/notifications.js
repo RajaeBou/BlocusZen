@@ -1,35 +1,40 @@
-// routes/notifications.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Notification = require('../models/Notification');
+const Notification = require("../models/Notification");
+const verifyToken = require("../firebase-auth");
 
-// 🔔 Voir toutes les notifications d’un utilisateur
-router.get('/:userId', async (req, res) => {
+// ✅ GET notifications pour un utilisateur
+router.get("/:userId", verifyToken, async (req, res) => {
+  const { userId } = req.params;
+  const { type, limit = 20, skip = 0 } = req.query;
+
   try {
-    const notifications = await Notification.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    const filter = { userId };
+    if (type) filter.type = type;
+
+    const notifications = await Notification.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(parseInt(skip))
+      .limit(parseInt(limit));
+
     res.json(notifications);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
-// ✅ Marquer une notification comme lue
-router.post('/read/:id', async (req, res) => {
+// ✅ PATCH pour marquer comme lu
+router.patch("/:id/read", verifyToken, async (req, res) => {
   try {
-    const notif = await Notification.findByIdAndUpdate(req.params.id, { isRead: true }, { new: true });
+    const notif = await Notification.findByIdAndUpdate(
+      req.params.id,
+      { isRead: true },
+      { new: true }
+    );
+    if (!notif) return res.status(404).json({ message: "Notification introuvable" });
     res.json(notif);
   } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ❌ Supprimer une notification
-router.delete('/:id', async (req, res) => {
-  try {
-    await Notification.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Notification supprimée' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Erreur lors de la mise à jour" });
   }
 });
 

@@ -8,11 +8,13 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginRegister() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -25,6 +27,14 @@ export default function LoginRegister() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert("✅ Inscription réussie !");
+
+      const currentUser = auth.currentUser;
+      const token = await currentUser.getIdToken();
+      localStorage.setItem("token", token);
+      localStorage.setItem("photoURL", currentUser.photoURL || ""); // facultatif
+
+      // Redirection vers formulaire profil après inscription
+      window.location.href = "/profile-form";
     } catch (error) {
       alert("❌ Erreur inscription : " + error.message);
     }
@@ -32,16 +42,31 @@ export default function LoginRegister() {
 
   const handleLogin = async () => {
     try {
+      console.log("Tentative de login avec :", email, password);
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       alert("✅ Connexion réussie !");
 
       const token = await userCredential.user.getIdToken();
-      console.log("Token récupéré : ", token);
-      localStorage.setItem("token", token); // ✅ Enregistrement du token
+      localStorage.setItem("token", token);
 
-      // 🔁 Redirection après connexion
-      window.location.href = "/mes-sessions";
+      const uid = userCredential.user.uid;
 
+      // 🔎 Vérifie si le profil existe
+      const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      // 🔁 Redirection selon profil
+      if (data) {
+        window.location.href = "/home";
+      } else {
+        window.location.href = "/profile-form";
+      }
     } catch (error) {
       alert("❌ Erreur connexion : " + error.message);
     }
@@ -52,15 +77,30 @@ export default function LoginRegister() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+
       alert("✅ Connecté avec Google : " + user.email);
 
       const token = await user.getIdToken();
-      console.log("Token récupéré Google : ", token);
-      localStorage.setItem("token", token); // ✅ Enregistrement du token
+      localStorage.setItem("token", token);
+      localStorage.setItem("photoURL", user.photoURL); // 👈 conserve la photo Google
 
-      // 🔁 Redirection après connexion Google
-      window.location.href = "/mes-sessions";
+      const uid = user.uid;
 
+      // 🔎 Vérifie si un profil existe
+      const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      // 🔁 Redirection selon profil
+      if (data) {
+        window.location.href = "/home";
+      } else {
+        window.location.href = "/profile-form";
+      }
     } catch (error) {
       alert("❌ Erreur Google : " + error.message);
     }
@@ -68,7 +108,8 @@ export default function LoginRegister() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    localStorage.removeItem("token"); // ✅ Nettoyage du token
+    localStorage.removeItem("token");
+    localStorage.removeItem("photoURL");
     alert("🚪 Déconnecté !");
     setUser(null);
   };
