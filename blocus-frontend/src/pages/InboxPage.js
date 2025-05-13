@@ -12,7 +12,7 @@ export default function InboxPage() {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:5000/api/messages/conversations", {
+        const res = await fetch("api/messages/conversations", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

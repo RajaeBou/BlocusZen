@@ -18,7 +18,7 @@ export default function SessionLive() {
     const fetchSession = async () => {
       try {
         const token = await getToken();
-        const res = await fetch(`http://localhost:5000/api/liveSessions/${id}`, {
+        const res = await fetch(`api/liveSessions/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -66,7 +66,7 @@ export default function SessionLive() {
     const timeout = setTimeout(async () => {
       try {
         const token = await getToken();
-        await fetch(`http://localhost:5000/api/liveSessions/${session._id}/note`, {
+        await fetch(`api/liveSessions/${session._id}/note`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -88,7 +88,7 @@ export default function SessionLive() {
     setAiResponse("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/ai/generate-summary", {
+      const res = await fetch("api/ai/generate-summary", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

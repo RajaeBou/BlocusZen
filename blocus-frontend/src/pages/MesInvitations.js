@@ -10,7 +10,7 @@ export default function MesInvitations() {
         const userId = await getCurrentUserId();
         const token = await getToken();
 
-        const res = await fetch(`http://localhost:5000/api/invitations/received/${userId}`, {
+        const res = await fetch(`api/invitations/received/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -30,7 +30,7 @@ export default function MesInvitations() {
     try {
       const token = await getToken();
   
-      const res = await fetch(`http://localhost:5000/api/invitations/${id}/${status}`, {
+      const res = await fetch(`api/invitations/${id}/${status}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,

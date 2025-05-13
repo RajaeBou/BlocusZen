@@ -17,8 +17,8 @@ export default function ProfileSetup() {
     const fetchData = async () => {
       const token = await getToken();
 
-      const uniRes = await fetch("http://localhost:5000/references/universities");
-      const fieldRes = await fetch("http://localhost:5000/references/fields");
+      const uniRes = await fetch("api/references/universities");
+      const fieldRes = await fetch("api/references/fields");
 
       setUniversities(await uniRes.json());
       setFields(await fieldRes.json());
@@ -32,7 +32,7 @@ export default function ProfileSetup() {
     const uid = await getCurrentUserId();
     const token = await getToken();
 
-    const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+    const res = await fetch(`api/profile/${uid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -53,7 +53,7 @@ export default function LoginRegister() {
       const uid = userCredential.user.uid;
 
       // 🔎 Vérifie si le profil existe
-      const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+      const res = await fetch(`api/profile/${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,7 +87,7 @@ export default function LoginRegister() {
       const uid = user.uid;
 
       // 🔎 Vérifie si un profil existe
-      const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+      const res = await fetch(`api/profile/${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

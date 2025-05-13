@@ -10,7 +10,7 @@ export default function Syntheses() {
     const fetchSyntheses = async () => {
       try {
         const token = await getToken();
-        const res = await fetch("http://localhost:5000/api/syntheses", {
+        const res = await fetch("api/syntheses", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -66,7 +66,7 @@ export default function Syntheses() {
                 <td className="px-4 py-2">
                   {s.fichier ? (
                     <a
-                      href={`http://localhost:5000/${s.fichier}`}
+                      href={`api/${s.fichier}`}
                       download
                       className="text-blue-600 underline"
                     >

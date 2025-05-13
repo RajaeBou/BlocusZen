@@ -19,8 +19,8 @@ export default function ProfileForm() {
   useEffect(() => {
     const fetchReferences = async () => {
       try {
-        const uniRes = await fetch("http://localhost:5000/references/universities");
-        const fieldRes = await fetch("http://localhost:5000/references/fields");
+        const uniRes = await fetch("/references/universities");
+        const fieldRes = await fetch("/references/fields");
 
         const uniData = await uniRes.json();
         const fieldData = await fieldRes.json();
@@ -35,7 +35,7 @@ export default function ProfileForm() {
     const fetchProfile = async () => {
       const uid = await getCurrentUserId();
       const token = await getToken();
-      const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+      const res = await fetch(`api/profile/${uid}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -65,7 +65,7 @@ export default function ProfileForm() {
     const uid = await getCurrentUserId();
     const token = await getToken();
 
-    const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
+    const res = await fetch(`api/profile/${uid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export default function ProfileForm() {
     const formData = new FormData();
     formData.append("photo", file);
 
-    const res = await fetch(`http://localhost:5000/api/profile/${uid}/photo`, {
+    const res = await fetch(`api/profile/${uid}/photo`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -109,7 +109,7 @@ export default function ProfileForm() {
   };
 
   const displayedPhoto =
-    photoURL.startsWith("http") ? photoURL : photoURL ? `http://localhost:5000${photoURL}` : defaultAvatar;
+    photoURL.startsWith("http") ? photoURL : photoURL ? `/api${photoURL}` : defaultAvatar;
 
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>

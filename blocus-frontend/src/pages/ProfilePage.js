@@ -46,7 +46,7 @@ export default function ProfilePage() {
   const displayedPhoto = profile.photoURL
     ? profile.photoURL.startsWith("http")
       ? profile.photoURL
-      : `http://localhost:5000${profile.photoURL}`
+      : `/api${profile.photoURL}`
     : localStorage.getItem("photoURL") || defaultAvatar;
 
   return (
