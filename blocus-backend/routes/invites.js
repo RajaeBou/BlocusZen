@@ -43,8 +43,10 @@ router.post("/", verifyToken, async (req, res) => {
 router.get("/received/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
+    console.log(`📥 Requête GET /invitations/received/${userId}`);
 
     const invites = await Invite.find({ to: userId }).sort({ createdAt: -1 });
+    console.log(`🔍 Invitations trouvées : ${invites.length}`);
 
     const invitesWithSenderProfiles = await Promise.all(
       invites.map(async (inv) => {
@@ -63,51 +65,76 @@ router.get("/received/:userId", async (req, res) => {
   }
 });
 
+// PATCH /api/invitations/:id/:statu
 // PATCH /api/invitations/:id/:status
 router.patch("/:id/:status", verifyToken, async (req, res) => {
   const { id, status } = req.params;
+  console.log(`\n📨 PATCH /invitations/${id}/${status}`);
 
+  // Vérifie que le statut est valide
   if (!["accepted", "rejected"].includes(status)) {
+    console.warn("❌ Statut invalide reçu :", status);
     return res.status(400).json({ error: "Statut invalide" });
   }
 
   try {
     const invite = await Invite.findById(id);
-    if (!invite) return res.status(404).json({ error: "Invitation introuvable" });
+    if (!invite) {
+      console.warn("❌ Invitation introuvable :", id);
+      return res.status(404).json({ error: "Invitation introuvable" });
+    }
 
+    // 🛡️ Vérifie que seul le destinataire peut accepter/refuser
+    if (req.user.uid !== invite.to) {
+      console.warn(`⛔ UID non autorisé : ${req.user.uid} ≠ ${invite.to}`);
+      return res.status(403).json({ error: "Non autorisé à répondre à cette invitation" });
+    }
+
+    console.log(`📤 FROM (organisateur) : ${invite.from}`);
+    console.log(`📥 TO (invité) : ${invite.to}`);
+    console.log(`🧾 sessionId lié : ${invite.sessionId}`);
+
+    // Met à jour le statut
     invite.status = status;
     await invite.save();
+    console.log(`📝 Statut mis à jour : ${status}`);
 
+    // Si accepté : ajoute l'utilisateur dans la session
     if (status === "accepted") {
       if (!invite.sessionId) {
-        return res.status(400).json({ error: "Aucune session associée à cette invitation" });
+        console.error("🚫 Pas de sessionId associé à cette invitation !");
+        return res.status(400).json({ error: "Aucune session associée" });
       }
 
       const session = await StudySession.findById(invite.sessionId);
       if (!session) {
-        return res.status(404).json({ error: "Session introuvable" });
+        console.error("🚫 Session introuvable :", invite.sessionId);
+        return res.status(404).json({ error: "Session non trouvée" });
       }
 
-      const alreadyAdded = session.acceptedUsers
-        .map((id) => id.toString())
-        .includes(invite.to.toString());
+      const alreadyParticipant = session.acceptedUsers.includes(invite.to);
+      console.log(`👥 Est déjà participant ? ${alreadyParticipant}`);
 
-      if (!alreadyAdded) {
+      if (!alreadyParticipant) {
         session.acceptedUsers.push(invite.to);
         await session.save();
+        console.log(`✅ ${invite.to} ajouté à acceptedUsers de la session ${session._id}`);
+      } else {
+        console.log(`ℹ️ ${invite.to} était déjà dans la session`);
       }
 
-      // 🔔 Créer une notification pour l’organisateur
+      // 🔔 Notification à l’organisateur
       await createNotification({
         userId: invite.from,
-        content: "✅ Ton invitation a été acceptée par un participant !",
+        content: `✅ Ton invitation a été acceptée !`,
         type: "invite",
       });
     }
 
     res.json({ message: "Invitation mise à jour", invite });
+
   } catch (err) {
-    console.error("Erreur PATCH invitation:", err);
+    console.error("❌ Erreur PATCH invitation :", err);
     res.status(500).json({ error: "Erreur serveur" });
   }
 });

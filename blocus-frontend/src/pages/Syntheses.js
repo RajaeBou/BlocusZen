@@ -10,7 +10,7 @@ export default function Syntheses() {
     const fetchSyntheses = async () => {
       try {
         const token = await getToken();
-        const res = await fetch("api/syntheses", {
+        const res = await fetch("http://localhost:5000/api/syntheses", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

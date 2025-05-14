@@ -8,7 +8,7 @@ export default function ChatComponent({ sessionId }) {
     // Exemple : Fetch initial messages
     async function fetchMessages() {
       try {
-        const response = await fetch(`/api/sessions/${sessionId}/messages`);
+        const response = await fetch(`http://localhost:5000/api/sessions/${sessionId}/messages`);
         if (response.ok) {
           const data = await response.json();
           setMessages(data);

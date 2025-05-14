@@ -20,7 +20,7 @@ export default function MessagePage() {
 
     setCurrentUserId(uid);
 
-    const res = await fetch(`api/messages/conversation/${userId}`, {
+    const res = await fetch(`http://localhost:5000/api/messages/conversation/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -52,7 +52,7 @@ export default function MessagePage() {
     const token = await getToken();
     if (!content.trim() || !token) return;
 
-    const res = await fetch("api/messages", {
+    const res = await fetch("http://localhost:5000/api/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

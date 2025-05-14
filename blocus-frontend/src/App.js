@@ -12,11 +12,11 @@ import AjouterSynthese from "./pages/AjouterSynthese";
 import Syntheses from "./pages/Syntheses";
 import ProfilePage from "./pages/ProfilePage";
 import PrivateRoute from "./components/PrivateRoute";
+import PrivateRouteWithProfile from "./components/PrivateRouteWithProfile";
 import MesInvitations from "./pages/MesInvitations";
 import NotificationsPage from "./pages/NotificationsPage";
 import MessagePage from "./pages/MessagePage";
 import InboxPage from "./pages/InboxPage";
-import PrivateRouteWithProfile from "./components/PrivateRouteWithProfile";
 
 function App() {
   return (
@@ -24,81 +24,78 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<LoginRegister />} />
+
+       
         <Route path="/home" element={
           <PrivateRouteWithProfile>
             <Home />
           </PrivateRouteWithProfile>
         } />
-
         <Route path="/mes-sessions" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <MesSessions />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
         } />
-
         <Route path="/session/:id/live" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <SessionLive />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
         } />
-
         <Route path="/trouver-binome" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <TrouverBinome />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
         } />
-
         <Route path="/ajouter-synthese" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <AjouterSynthese />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
         } />
-
         <Route path="/syntheses" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <Syntheses />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
         } />
-
         <Route path="/invitations" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <MesInvitations />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
         } />
-
         <Route path="/notifications" element={
-          <PrivateRoute>
+          <PrivateRouteWithProfile>
             <NotificationsPage />
-          </PrivateRoute>
+          </PrivateRouteWithProfile>
+        } />
+        <Route path="/messages/:userId" element={
+          <PrivateRouteWithProfile>
+            <MessagePage />
+          </PrivateRouteWithProfile>
+        } />
+        <Route path="/messages" element={
+          <PrivateRouteWithProfile>
+            <InboxPage />
+          </PrivateRouteWithProfile>
+        } />
+        <Route path="/profile" element={
+          <PrivateRouteWithProfile>
+            <ProfilePage />
+          </PrivateRouteWithProfile>
+        } />
+        <Route path="/profile/:userId" element={
+          <PrivateRouteWithProfile>
+            <ProfilePage />
+          </PrivateRouteWithProfile>
         } />
 
-        <Route path="/messages/:userId" element={<MessagePage />} />
-        <Route path="/messages" element={<InboxPage />} />
-
-        {/* 🔧 Modifier / compléter son profil */}
+        {/* 🔧 Remplissage du profil (juste besoin d’être connecté) */}
         <Route path="/profile-form" element={
           <PrivateRoute>
             <ProfileForm />
           </PrivateRoute>
         } />
 
-        {/* 👤 Consulter son propre profil */}
-        <Route path="/profile" element={
-          <PrivateRoute>
-            <ProfilePage />
-          </PrivateRoute>
-        } />
-
-        {/* 👀 Consulter le profil d’un autre utilisateur */}
-        <Route path="/profile/:userId" element={
-          <PrivateRoute>
-            <ProfilePage />
-          </PrivateRoute>
-        } />
-
-        {/* Pour test éventuel */}
+        {/* Pour test éventuel (non protégé) */}
         <Route path="/university-test" element={<UniversityFieldSelector />} />
       </Routes>
     </BrowserRouter>

@@ -41,13 +41,21 @@ router.post('/', verifyToken, async (req, res) => {
 router.get("/my", verifyToken, async (req, res) => {
   try {
     const uid = req.user.uid;
+const now = new Date();
 
-    const sessions = await StudySession.find({
-      $or: [
-        { userId: uid },
-        { acceptedUsers: uid }
-      ]
-    });
+const sessions = await StudySession.find({
+  $or: [
+    { userId: uid },
+    { acceptedUsers: uid }
+  ],
+  endTime: { $gte: now } // 👈 sessions non terminées uniquement
+});
+
+
+
+
+
+
 
     const withRoles = sessions.map((session) => {
       const role = session.userId === uid ? "Organisateur" : "Participant";
@@ -100,6 +108,7 @@ router.get('/public', verifyToken, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // ✅ Modifier une session (protégé + propriétaire)
 router.put('/:id', verifyToken, async (req, res) => {

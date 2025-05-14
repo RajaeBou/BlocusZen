@@ -30,6 +30,7 @@ export default function LoginRegister() {
 
       const currentUser = auth.currentUser;
       const token = await currentUser.getIdToken();
+      console.log(token);
       localStorage.setItem("token", token);
       localStorage.setItem("photoURL", currentUser.photoURL || ""); // facultatif
 
@@ -42,7 +43,6 @@ export default function LoginRegister() {
 
   const handleLogin = async () => {
     try {
-      console.log("Tentative de login avec :", email, password);
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       alert("✅ Connexion réussie !");
@@ -53,7 +53,7 @@ export default function LoginRegister() {
       const uid = userCredential.user.uid;
 
       // 🔎 Vérifie si le profil existe
-      const res = await fetch(`api/profile/${uid}`, {
+      const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

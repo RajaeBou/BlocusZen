@@ -19,8 +19,8 @@ export default function ProfileForm() {
   useEffect(() => {
     const fetchReferences = async () => {
       try {
-        const uniRes = await fetch("/references/universities");
-        const fieldRes = await fetch("/references/fields");
+        const uniRes = await fetch("http://localhost:5000/references/universities");
+        const fieldRes = await fetch("http://localhost:5000/references/fields");
 
         const uniData = await uniRes.json();
         const fieldData = await fieldRes.json();
@@ -38,6 +38,7 @@ export default function ProfileForm() {
       const res = await fetch(`api/profile/${uid}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(token);
 
       if (res.ok) {
         const data = await res.json();
@@ -65,7 +66,7 @@ export default function ProfileForm() {
     const uid = await getCurrentUserId();
     const token = await getToken();
 
-    const res = await fetch(`api/profile/${uid}`, {
+    const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -92,7 +93,7 @@ export default function ProfileForm() {
     const formData = new FormData();
     formData.append("photo", file);
 
-    const res = await fetch(`api/profile/${uid}/photo`, {
+    const res = await fetch(`http://localhost:5000/api/profile/${uid}/photo`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

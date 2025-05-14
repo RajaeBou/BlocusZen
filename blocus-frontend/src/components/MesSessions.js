@@ -12,6 +12,7 @@ export default function MesSessions() {
   const [showForm, setShowForm] = useState(false);
   const [upcomingPopup, setUpcomingPopup] = useState(null);
   const [dismissedPopup, setDismissedPopup] = useState(false);
+  const [pastSessions, setPastSessions] = useState([]);
 
   const [newSession, setNewSession] = useState({
     subject: "",
@@ -22,13 +23,12 @@ export default function MesSessions() {
     visibility: "private",
   });
 
-  // 🔄 Charger les session
-  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     const fetchSessions = async () => {
       try {
         const token = await getToken();
+        console.log(token);
         const uid = await getCurrentUserId();
         if (!token || !uid) return;
   
@@ -295,6 +295,7 @@ export default function MesSessions() {
           </tbody>
         </table>
       </div>
+  
   
       {upcomingPopup && !dismissedPopup && (
         <div style={{

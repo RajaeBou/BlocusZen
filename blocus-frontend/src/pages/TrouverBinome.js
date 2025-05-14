@@ -13,7 +13,7 @@ export default function TrouverBinome() {
         const token = await getToken();
         if (!token) return;
 
-        const response = await fetch('api/sessions/public', {
+        const response = await fetch('http://localhost:5000/api/sessions/public', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -38,7 +38,7 @@ export default function TrouverBinome() {
       const token = await getToken();
       if (!from || !toUserId || !token) return;
   
-      const res = await fetch("api/invitations", {
+      const res = await fetch("http://localhost:5000/api/invitations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
