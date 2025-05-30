@@ -1,0 +1,44 @@
+/* Tooltip visuel sur le jour contenant une session */
+.tooltip[data-tooltip] {
+  position: relative;
+}
+
+.tooltip[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 8px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: pre-line;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+  min-width: 160px;
+  max-width: 240px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tooltip[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tooltip[data-tooltip]:hover::after,
+.tooltip[data-tooltip]:hover::before {
+  opacity: 1;
+}

@@ -1,0 +1,9 @@
+.dot {
+    margin-top: 5px;
+    height: 6px;
+    width: 6px;
+    background-color: #10b981; /* vert */
+    border-radius: 50%;
+    display: inline-block;
+  }
+  

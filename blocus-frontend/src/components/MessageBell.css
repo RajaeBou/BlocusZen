@@ -1,0 +1,28 @@
+.message-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .message-icon {
+    color: #5b2a86; /* violet foncé */
+    width: 24px;
+    height: 24px;
+  }
+  
+  .message-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #dc2626;
+    color: white;
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    z-index: 10;
+  }
+  

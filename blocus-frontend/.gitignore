@@ -1,0 +1,45 @@
+# ---------------------
+# 🌐 FRONTEND IGNORE
+# ---------------------
+blocus-frontend/node_modules/
+blocus-frontend/.env
+blocus-frontend/.env.*
+blocus-frontend/build/
+blocus-frontend/coverage/
+
+# ---------------------
+# 🛠️ BACKEND IGNORE
+# ---------------------
+blocus-backend/node_modules/
+blocus-backend/.env
+#blocus-backend/.env.*
+blocus-backend/logs/
+blocus-backend/coverage/
+
+# ---------------------
+# 🧪 COMMON IGNORE
+# ---------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------------------
+# ⚙️ IDE CONFIG FILES
+# ---------------------
+.vscode/
+.idea/
+*.swp
+
+# ---------------------
+# 🖥️ OS GENERATED FILES
+# ---------------------
+.DS_Store
+Thumbs.db
+
+# ---------------------
+# 🚀 DIST / BUILD
+# ---------------------
+dist/
+build/

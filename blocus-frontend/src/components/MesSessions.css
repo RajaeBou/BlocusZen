@@ -1,0 +1,218 @@
+body {
+    background-color: #faf9f6;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #e1bee7;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-weight: bold;
+  }
+  
+  header nav a {
+    margin: 0 16px;
+    text-decoration: none;
+    color: #6a1b9a;
+    font-size: 16px;
+  }
+  
+  header nav a:hover {
+    text-decoration: underline;
+  }
+  
+  h2, h3 {
+    color: #6a1b9a;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  button {
+    padding: 8px 16px;
+    margin: 4px;
+    background-color: #b39ddb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-size: 14px;
+  }
+  
+  button:hover {
+    background-color: #9575cd;
+    transform: translateY(-1px);
+  }
+  
+  input, textarea, select {
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: #fff;
+  }
+  
+  form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 18px;
+    max-width: 600px;
+    margin: 30px auto;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  form select {
+    max-width: 100%;
+  }
+  
+  form label {
+    font-weight: 600;
+    color: #6a1b9a;
+    margin-bottom: 4px;
+  }
+  
+  .react-calendar {
+    margin: 0 auto;
+    max-width: 380px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    padding: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .react-calendar__tile {
+    padding: 10px 6px;
+    font-size: 14px;
+    position: relative;
+  }
+  
+  .react-calendar__tile::after {
+    content: none !important;
+  }
+  
+  .react-calendar__month-view__days__day {
+    color: #333;
+  }
+  
+  .react-calendar__month-view__weekdays {
+    text-align: center;
+    font-weight: bold;
+    color: #6a1b9a;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  
+  .react-calendar__tile--now {
+    background-color: #fff59d;
+    border-radius: 50%;
+  }
+  
+  .react-calendar__tile--active {
+    background-color: #b39ddb;
+    color: white;
+    border-radius: 50%;
+  }
+  
+  .react-calendar__navigation button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #6a1b9a;
+    font-weight: bold;
+    padding: 6px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+  
+  table thead {
+    background-color: #e1bee7;
+  }
+  
+  table th, table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+  
+  table tr:hover {
+    background-color: #f8f8f8;
+  }
+  
+  .has-session {
+    background-color: #b2f2bb !important;
+    border-radius: 50%;
+  }
+  
+  .status {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .status-upcoming {
+    background-color: #b2f2bb;
+    color: #1b5e20;
+  }
+  
+  .fixed-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    max-width: 300px;
+  }
+  
+  .fixed-popup button {
+    background-color: #80cbc4;
+    border-radius: 8px;
+    margin-top: 8px;
+  }
+  
+  .fixed-popup button:hover {
+    background-color: #4db6ac;
+  }
+  
+  td button {
+    background-color: #b39ddb;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  
+  td button:hover {
+    background-color: #9575cd;
+  }
+  
