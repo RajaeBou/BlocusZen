@@ -5,7 +5,6 @@ const UserProfile = require("../models/UserProfile");
 const verifyToken = require("../firebase-auth");
 const createNotification = require("../utils/createNotification");
 
-// 📩 Envoyer un message
 router.post("/", verifyToken, async (req, res) => {
   try {
     const { to, content } = req.body;
@@ -22,7 +21,6 @@ router.post("/", verifyToken, async (req, res) => {
       createdAt: new Date(),
     });
 
-    // 🔔 Créer une notification enrichie
     const senderProfile = await UserProfile.findOne({ userId: from });
     const senderName = senderProfile?.name || "quelqu’un";
 
@@ -44,12 +42,10 @@ router.get("/conversations", verifyToken, async (req, res) => {
     try {
       const currentUserId = req.user.uid;
   
-      // Récupère tous les messages envoyés ou reçus
       const messages = await Message.find({
         $or: [{ from: currentUserId }, { to: currentUserId }],
       }).sort({ createdAt: -1 });
   
-      // Regrouper par utilisateur (l'autre)
       const conversationsMap = new Map();
   
       for (const msg of messages) {
@@ -74,20 +70,16 @@ router.get("/conversations", verifyToken, async (req, res) => {
     }
   });
 
-// 💬 Récupérer la conversation entre deux utilisateurs
-// 💬 Récupérer la conversation entre deux utilisateurs
 router.get("/conversation/:otherUserId", verifyToken, async (req, res) => {
     try {
       const currentUserId = req.user.uid;
       const { otherUserId } = req.params;
   
-      // 🔸 Marquer comme lus les messages que j'ai reçus
       await Message.updateMany(
         { from: otherUserId, to: currentUserId, isRead: false },
         { $set: { isRead: true } }
       );
   
-      // 🔹 Charger la conversation
       const messages = await Message.find({
         $or: [
           { from: currentUserId, to: otherUserId },
@@ -102,8 +94,6 @@ router.get("/conversation/:otherUserId", verifyToken, async (req, res) => {
     }
   });
 
-  // ✅ PATCH pour marquer un message comme lu
-  // ✅ PATCH pour marquer un message comme lu
 router.patch("/:id/read", verifyToken, async (req, res) => {
     try {
       const msg = await Message.findByIdAndUpdate(

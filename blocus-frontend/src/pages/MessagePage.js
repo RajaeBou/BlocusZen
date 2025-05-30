@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getCurrentUserId, getToken } from "../helpers/auth";
 import { markMessageAsRead } from "../helpers/messages";
-import Conversation from "../components/Conversation"; // 👈 à créer ou adapter
-// Assure-toi que ce fichier existe et qu'il reçoit props: messages
+import Conversation from "../components/Conversation"; 
+
 import "./MessagePage.css";
 
 
@@ -31,7 +31,7 @@ export default function MessagePage() {
       const unread = data.filter((msg) => msg.to === uid && !msg.isRead);
       await Promise.all(unread.map((msg) => markMessageAsRead(msg._id)));
 
-      // ✅ Met à jour la bulle dans MessageBell
+    
       window.dispatchEvent(
         new CustomEvent("updateUnreadMessages", {
           detail: (prev) => Math.max(0, prev - unread.length),

@@ -23,7 +23,6 @@ const NavbarProfile = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 🧩 Classe commune pour tous les éléments
   const itemStyle = {
     display: "flex",
     alignItems: "center",

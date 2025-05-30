@@ -46,9 +46,9 @@ app.use('/', syntheseRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use(profileRoutes);
 app.use("/api/messages", messageRoutes);
-app.use('/api/notifications', notificationRoutes); // ✅ Cette ligne est essentielle
-app.use('/references', referencesRoutes); // 👈 monte le routeur
-app.use("/logo", express.static(path.join(__dirname, "logo"))); // servir l'avatar par défaut
+app.use('/api/notifications', notificationRoutes); 
+app.use('/references', referencesRoutes); 
+app.use("/logo", express.static(path.join(__dirname, "logo"))); 
 
 
 app.get("/", (req, res) => {

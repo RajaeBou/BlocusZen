@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import "./Header.css";
 import logo from "../logo/logo.png";
 import NavbarProfileMenu from "../components/NavbarProfileMenu";
-//import InvitationDropdown from "./InvitationDropdown"; // 👈 Assure-toi que le chemin est bon
-import NotificationBell from "../components/NotificationBell"; // vérifie bien le chemin
-import { Mail } from "lucide-react"; // ou utilise une icône emoji si tu préfères
+
+import NotificationBell from "../components/NotificationBell"; 
+import { Mail } from "lucide-react"; 
 import MessageBell from "./MessageBell";
 
 

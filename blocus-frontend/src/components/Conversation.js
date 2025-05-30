@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { getCurrentUserId, getToken } from "../helpers/auth";
-import "./Conversation.css"; // 👈 à créer juste après
+import "./Conversation.css"; 
 
 export default function Conversation({ messages }) {
   const [participants, setParticipants] = useState({});

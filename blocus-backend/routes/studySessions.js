@@ -1,155 +1,126 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const StudySession = require('../models/StudySession');
-const verifyToken = require('../firebase-auth');
-const UserProfile = require('../models/UserProfile');
-const createNotification = require('../utils/createNotification'); // ✅ Ajout utilitaire
+const Invite = require("../models/Invite");
+const verifyToken = require("../firebase-auth");
+const UserProfile = require("../models/UserProfile");
+const StudySession = require("../models/StudySession");
+const createNotification = require("../utils/createNotification");
 
-// ✅ Créer une session
-router.post('/', verifyToken, async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
   try {
-    const { subject, date, startTime, endTime, visibility, note } = req.body;
+    const from = req.user.uid;
+    const { to, sessionId } = req.body;
 
-    const session = new StudySession({
-      subject,
-      date,
-      startTime,
-      endTime,
-      visibility: visibility || 'private',
-      note,
-      userId: req.user.uid,
-    });
-
-    await session.save();
-
-    // 🔔 Créer une notification si session publique (utile pour rappel futur, ou pour afficher dans l’historique)
-    if (session.visibility === 'public') {
-      await createNotification({
-        userId: req.user.uid,
-        content: `🆕 Tu as créé une session publique sur "${subject}".`,
-        type: 'reminder',
-      });
+    if (!to) {
+      return res.status(400).json({ error: "Champ 'to' manquant" });
     }
 
-    res.status(201).json(session);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// ✅ Voir ses propres sessions
-router.get("/my", verifyToken, async (req, res) => {
-  try {
-    const uid = req.user.uid;
-const now = new Date();
-
-const sessions = await StudySession.find({
-  $or: [
-    { userId: uid },
-    { acceptedUsers: uid }
-  ],
-  endTime: { $gte: now } // 👈 sessions non terminées uniquement
-});
-
-
-
-
-
-
-
-    const withRoles = sessions.map((session) => {
-      const role = session.userId === uid ? "Organisateur" : "Participant";
-      console.log(`[DEBUG] Session ${session._id} → userId: ${session.userId} | accepted: ${session.acceptedUsers} | UID: ${uid} | Rôle: ${role}`);
-
-      return { ...session.toObject(), role };
+    const newInvite = new Invite({
+      from,
+      to,
+      sessionId: sessionId || null,
     });
 
-    res.json(withRoles);
+    const saved = await newInvite.save();
+
+    await createNotification({
+      userId: to,
+      content: "📨 Tu as reçu une nouvelle invitation à une session d'étude.",
+      type: "invite",
+    });
+
+    res.status(201).json(saved);
   } catch (err) {
-    console.error("Erreur /sessions/my :", err);
+    console.error("Erreur POST /api/invitations :", err);
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
-// ✅ Voir les sessions publiques (exclut les siennes)
-router.get('/public', verifyToken, async (req, res) => {
+router.get("/received/:userId", async (req, res) => {
   try {
-    const userId = req.user.uid;
+    const { userId } = req.params;
+    const invites = await Invite.find({ to: userId }).sort({ createdAt: -1 });
 
-    const sessions = await StudySession.find({ 
-      visibility: 'public',
-      userId: { $ne: userId }
-    });
-
-    const sessionsWithProfiles = await Promise.all(
-      sessions.map(async (session) => {
-        const organizerProfile = await UserProfile.findOne({ userId: session.userId });
-
-        const participantsProfiles = await Promise.all(
-          (session.acceptedUsers || []).map(async (id) => {
-            return await UserProfile.findOne({ userId: id });
-          })
-        );
-
-        const isParticipant = session.acceptedUsers?.includes(userId);
-
+    const invitesWithSenderProfiles = await Promise.all(
+      invites.map(async (inv) => {
+        const fromProfile = await UserProfile.findOne({ userId: inv.from });
         return {
-          ...session.toObject(),
-          organizerProfile,
-          participantsProfiles,
-          isParticipant,
+          ...inv.toObject(),
+          fromProfile: fromProfile || null,
         };
       })
     );
 
-    res.json(sessionsWithProfiles);
-  } catch (error) {
-    console.error("Erreur lors de la récupération des sessions publiques:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-
-// ✅ Modifier une session (protégé + propriétaire)
-router.put('/:id', verifyToken, async (req, res) => {
-  try {
-    const session = await StudySession.findById(req.params.id);
-
-    if (!session) return res.status(404).json({ error: 'Session non trouvée' });
-    if (session.userId.toString() !== req.user.uid)
-      return res.status(403).json({ error: 'Non autorisé à modifier cette session' });
-
-    const updated = await StudySession.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// ✅ Récupérer une session par ID
-router.get("/:id", async (req, res) => {
-  try {
-    const session = await StudySession.findById(req.params.id);
-    if (!session) return res.status(404).json({ message: "Session introuvable" });
-    res.json(session);
+    res.json(invitesWithSenderProfiles);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Erreur récupération invitations :", err);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
-// ✅ Supprimer une session (protégé + propriétaire)
-router.delete('/:id', verifyToken, async (req, res) => {
+router.patch("/:id/:status", verifyToken, async (req, res) => {
+  const { id, status } = req.params;
+
+  if (!["accepted", "rejected"].includes(status)) {
+    return res.status(400).json({ error: "Statut invalide" });
+  }
+
   try {
-    const session = await StudySession.findById(req.params.id);
+    const invite = await Invite.findById(id);
+    if (!invite) return res.status(404).json({ error: "Invitation introuvable" });
 
-    if (!session) return res.status(404).json({ error: 'Session non trouvée' });
-    if (session.userId.toString() !== req.user.uid)
-      return res.status(403).json({ error: 'Non autorisé à supprimer cette session' });
+    const currentUser = req.user.uid;
 
-    await session.deleteOne();
-    res.json({ message: 'Session supprimée' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (currentUser !== invite.from && currentUser !== invite.to) {
+      return res.status(403).json({ error: "Non autorisé à modifier cette invitation" });
+    }
+
+    invite.status = status;
+    await invite.save();
+
+    if (status === "accepted") {
+      const session = await StudySession.findById(invite.sessionId);
+      if (!session) return res.status(404).json({ error: "Session non trouvée" });
+
+      // Ajouter le participant s’il n’y est pas déjà
+      if (!session.acceptedUsers.includes(invite.to)) {
+        session.acceptedUsers.push(invite.to);
+        await session.save();
+      }
+
+      // 🔔 Notifier immédiatement le participant avec le lien vers la session
+      await createNotification({
+        userId: invite.to,
+        content: `🎉 Ton invitation à la session "${session.subject}" a été acceptée !`,
+        type: "reminder",
+        link: `/session/${session._id}/live`,
+      });
+
+      // ⏰ Notification 2 minutes avant le début de la session
+      const sessionStart = new Date(`${session.date}T${session.startTime}`);
+      const now = new Date();
+      const delay = sessionStart - now - 2 * 60 * 1000;
+
+      if (delay > 0) {
+        console.log(`⏳ Notification "2 min avant" planifiée dans ${Math.round(delay / 1000)} secondes`);
+        setTimeout(async () => {
+          await createNotification({
+            userId: invite.to,
+            content: `⏰ Ta session "${session.subject}" commence dans 2 minutes.`,
+            type: "reminder",
+            link: `/session/${session._id}/live`,
+          });
+        }, delay);
+      } else {
+        console.log("⚠️ Trop tard pour programmer la notification 2 minutes avant.");
+      }
+    }
+
+    res.json({ message: "Invitation mise à jour", invite });
+
+  } catch (err) {
+    console.error("Erreur PATCH invitation :", err);
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 

@@ -60,10 +60,6 @@ export default function TrouverBinome() {
   };
   
     
-    
-    
-    
-  
 
   const formatDate = (dateStr) => {
     try {
@@ -161,7 +157,6 @@ export default function TrouverBinome() {
   );
 }
 
-// 🎨 Styles
 const thStyle = {
   padding: '14px',
   textAlign: 'left',

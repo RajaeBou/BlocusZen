@@ -86,7 +86,7 @@ export default function NotificationDropdown() {
                     markAsRead(n._id);
                     if (n.type === "invite") navigate("/invitations");
                     else if (n.type === "reminder") navigate("/mes-sessions");
-                    // Ajoute d'autres redirections si besoin
+                    
                     setOpen(false);
                   }}
                 >

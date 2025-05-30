@@ -5,7 +5,7 @@ export default function ChatComponent({ sessionId }) {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    // Exemple : Fetch initial messages
+   
     async function fetchMessages() {
       try {
         const response = await fetch(`http://localhost:5000/api/sessions/${sessionId}/messages`);
@@ -20,7 +20,7 @@ export default function ChatComponent({ sessionId }) {
 
     fetchMessages();
 
-    // Si tu utilises WebSocket ou Socket.io, tu peux aussi écouter les nouveaux messages ici
+    
   }, [sessionId]);
 
   const sendMessage = async () => {

@@ -32,9 +32,9 @@ export default function LoginRegister() {
       const token = await currentUser.getIdToken();
       console.log(token);
       localStorage.setItem("token", token);
-      localStorage.setItem("photoURL", currentUser.photoURL || ""); // facultatif
+      localStorage.setItem("photoURL", currentUser.photoURL || ""); 
 
-      // Redirection vers formulaire profil après inscription
+      
       window.location.href = "/profile-form";
     } catch (error) {
       alert("❌ Erreur inscription : " + error.message);
@@ -52,7 +52,6 @@ export default function LoginRegister() {
 
       const uid = userCredential.user.uid;
 
-      // 🔎 Vérifie si le profil existe
       const res = await fetch(`http://localhost:5000/api/profile/${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,7 +60,6 @@ export default function LoginRegister() {
 
       const data = await res.json();
 
-      // 🔁 Redirection selon profil
       if (data) {
         window.location.href = "/home";
       } else {
@@ -82,11 +80,10 @@ export default function LoginRegister() {
 
       const token = await user.getIdToken();
       localStorage.setItem("token", token);
-      localStorage.setItem("photoURL", user.photoURL); // 👈 conserve la photo Google
+      localStorage.setItem("photoURL", user.photoURL); 
 
       const uid = user.uid;
 
-      // 🔎 Vérifie si un profil existe
       const res = await fetch(`api/profile/${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -95,7 +92,6 @@ export default function LoginRegister() {
 
       const data = await res.json();
 
-      // 🔁 Redirection selon profil
       if (data) {
         window.location.href = "/home";
       } else {

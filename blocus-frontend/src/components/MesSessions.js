@@ -54,7 +54,6 @@ export default function MesSessions() {
           }
         }
   
-        // ✅ Ajouter rôle selon userId ou acceptedUsers
         const sessionsWithRoles = validSessions.map((session) => {
           const role = session.userId === uid
             ? "Organisateur"
@@ -105,14 +104,13 @@ export default function MesSessions() {
     return "🔴 Terminée";
   };
 
-  // ✅ Utilisation de toLocaleDateString pour éviter le décalage
   const tileClassName = ({ date }) => {
-    const dateStr = date.toLocaleDateString("fr-CA"); // ← MODIFIÉ
+    const dateStr = date.toLocaleDateString("fr-CA"); 
     return sessions.some((s) => s.date === dateStr) ? "has-session" : null;
   };
 
   const handleDateClick = (date) => {
-    const dateStr = date.toLocaleDateString("fr-CA"); // ← MODIFIÉ
+    const dateStr = date.toLocaleDateString("fr-CA"); 
     const filtered = sessions.filter((s) => s.date === dateStr);
     setPopupSessions(filtered);
     setSelectedDate(dateStr);

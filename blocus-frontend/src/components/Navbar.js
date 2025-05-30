@@ -1,8 +1,7 @@
-// 📁 src/components/Navbar.js (extrait)
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import defaultAvatar from "../assets/default-avatar.png"; // ou public/
+import defaultAvatar from "../assets/default-avatar.png"; 
 
 export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);

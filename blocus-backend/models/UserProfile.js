@@ -8,7 +8,7 @@ const userProfileSchema = new mongoose.Schema({
   field: { type: String, required: true },
   level: { type: String, required: true },
   bio: { type: String },
-  photoURL: { type: String, default: "" } // chemin vers l'image par défaut
+  photoURL: { type: String, default: "" } 
 });
 
 module.exports = mongoose.model("UserProfile", userProfileSchema);

@@ -1,9 +1,8 @@
-// 📁 src/components/CalendarWithSessions.js
 
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import './CalendarWithSessions.css'; // Fichier pour la classe .dot
+import './CalendarWithSessions.css'; 
 
 export default function CalendarWithSessions({ userId }) {
   const [sessions, setSessions] = useState([]);

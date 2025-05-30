@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getToken } from "../helpers/auth"; // Fonction pour récupérer le token d'authentification
-import logo from "../logo/logo.png"; // Logo de ton application
+import { getToken } from "../helpers/auth"; 
+import logo from "../logo/logo.png"; 
 import b from "../logo/binome.png";
 import p from "../logo/planifie.png";
 import s from "../logo/synthese.png";
@@ -10,29 +10,29 @@ import f from "../logo/forum.png";
 export default function Home() {
   const navigate = useNavigate();
 
-  // Fonction pour vérifier si l'utilisateur est connecté
+ 
   const isAuthenticated = () => {
-    const token = getToken(); // Si un token existe, l'utilisateur est connecté
+    const token = getToken(); 
     return token;
   };
 
-  // Fonction de gestion du clic sur le logo
+ 
   const handleLogoClick = () => {
-    const token = getToken(); // Vérifie si l'utilisateur est connecté
+    const token = getToken(); 
     if (token) {
-      navigate("/dashboard"); // Redirige vers le dashboard si l'utilisateur est connecté
+      navigate("/dashboard"); 
     } else {
-      navigate("/login"); // Redirige vers la page de connexion si non connecté
+      navigate("/login"); 
     }
   };
 
-  // Fonction de gestion de la navigation avec vérification de l'authentification
+ 
   const handleNavigation = (path) => {
     const token = isAuthenticated();
     if (token) {
-      navigate(path); // Si connecté, on navigue vers la page
+      navigate(path); 
     } else {
-      navigate("/login"); // Si non connecté, redirige vers la page de connexion
+      navigate("/login"); 
     }
   };
 
@@ -50,9 +50,9 @@ export default function Home() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", // Ajout de cette ligne pour que les blocs s'ajustent à la taille de l'écran
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", 
           gap: "20px",
-          maxWidth: "1200px", // Définit une largeur maximale
+          maxWidth: "1200px",
           margin: "0 auto",
         }}
       >
@@ -64,10 +64,10 @@ export default function Home() {
             padding: "20px",
             cursor: "pointer",
             background: "#f9f9f9",
-            display: "flex", // Ajout de Flexbox pour centrer le contenu
+            display: "flex", 
             flexDirection: "column",
-            alignItems: "center", // Centrage horizontal des éléments
-            justifyContent: "center", // Centrage vertical des éléments
+            alignItems: "center", 
+            justifyContent: "center", 
           }}
         >
           <img src={p} alt="Planifier" style={{ width: "200px", marginBottom: "10px" }} />

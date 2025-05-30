@@ -18,7 +18,7 @@
     min-height: 300px;
     max-height: 500px;
     overflow-y: auto;
-    overflow-x: hidden; /* ✅ empêche la barre horizontale */
+    overflow-x: hidden; 
     margin-bottom: 16px;
   }
   

@@ -6,7 +6,6 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// 📦 Configuration du dossier d'upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, "..", "uploads");
@@ -20,7 +19,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 🧾 GET profil
 router.get("/api/profile/:userId", verifyToken, async (req, res) => {
   try {
     const profile = await UserProfile.findOne({ userId: req.params.userId });
@@ -32,7 +30,6 @@ router.get("/api/profile/:userId", verifyToken, async (req, res) => {
   }
 });
 
-// ✏️ PUT créer ou mettre à jour
 router.put("/api/profile/:userId", verifyToken, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -55,7 +52,6 @@ router.put("/api/profile/:userId", verifyToken, async (req, res) => {
   }
 });
 
-// 📸 POST pour mettre à jour la photo
 router.post("/api/profile/:userId/photo", verifyToken, upload.single("photo"), async (req, res) => {
   try {
     const userId = req.params.userId;

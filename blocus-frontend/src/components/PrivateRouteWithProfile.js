@@ -1,4 +1,3 @@
-// frontend/src/components/PrivateRouteWithProfile.js
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { getCurrentUserId, getToken } from "../helpers/auth";

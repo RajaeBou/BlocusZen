@@ -16,11 +16,11 @@ module.exports = async function verifyToken(req, res, next) {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = await admin.auth().verifyIdToken(token);
-    //console.log("✅ Token Firebase décodé :", decoded); // 👈 AJOUTE CECI
+   
     req.user = decoded;
     next();
   } catch (err) {
-    console.error("❌ Erreur Firebase Admin :", err); // 👈 Et ça aussi
+    console.error("❌ Erreur Firebase Admin :", err);
     return res.status(403).json({ error: "Token invalide ou expiré." });
   }
   

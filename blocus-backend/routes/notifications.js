@@ -3,7 +3,6 @@ const router = express.Router();
 const Notification = require("../models/Notification");
 const verifyToken = require("../firebase-auth");
 
-// ✅ GET notifications pour un utilisateur
 router.get("/:userId", verifyToken, async (req, res) => {
   const { userId } = req.params;
   const { type, limit = 20, skip = 0 } = req.query;
@@ -23,7 +22,6 @@ router.get("/:userId", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ PATCH pour marquer comme lu
 router.patch("/:id/read", verifyToken, async (req, res) => {
   try {
     const notif = await Notification.findByIdAndUpdate(
